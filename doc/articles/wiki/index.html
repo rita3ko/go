@@ -46,7 +46,13 @@ $ cd gowiki
 </pre>
 
 <p>
-Create a file named <code>wiki.go</code>, open it in your favorite editor, and
+Create a file named <code>wiki.go</code> with nano, 
+
+<pre>
+$ nano wiki.go
+</pre>
+
+or open it in your favorite editor, and
 add the following lines:
 </p>
 
@@ -194,7 +200,7 @@ This is a sample page.
 <h2>Introducing the <code>net/http</code> package (an interlude)</h2>
 
 <p>
-Here's a full working example of a simple web server:
+To get a feel for a full working simple web server, create a new file called <code>server.go</code>. Here's an example of what a really simple Go server looks like. 
 </p>
 
 {{code "doc/articles/wiki/http-sample.go"}}
@@ -233,6 +239,14 @@ This drops the leading "/" from the path name.
 </p>
 
 <p>
+You can run this program by running 
+
+<pre>
+$ go build server.go
+$ ./server
+</pre>
+
+<p>
 If you run this program and access the URL:
 </p>
 <pre>http://localhost:8080/monkeys</pre>
@@ -240,6 +254,8 @@ If you run this program and access the URL:
 the program would present a page containing:
 </p>
 <pre>Hi there, I love monkeys!</pre>
+
+You may now delete the <code>server.go</code> file as we won't be using it again in this tutorial.
 
 <h2>Using <code>net/http</code> to serve wiki pages</h2>
 
@@ -360,6 +376,8 @@ underlying Go code.
 <p>
 First, we must add <code>html/template</code> to the list of imports. We
 also won't be using <code>fmt</code> anymore, so we have to remove that.
+(Note that if you try compiling Go with the unused import, you will receive
+a compilation error).
 </p>
 
 <pre>
@@ -575,6 +593,18 @@ this, we can write a function to validate the title with a regular expression.
 
 <p>
 First, add <code>"regexp"</code> to the <code>import</code> list.
+We will also import <code>"errors"</code> for now, though we will remove it later.
+
+<pre>
+import (
+        "fmt"
+        "io/ioutil"
+        "net/http"
+        <b>"regexp"</b>
+        <b>"errors"</b>
+)
+</pre>
+
 Then we can create a global variable to store our validation 
 expression:
 </p>
@@ -662,6 +692,8 @@ Now we can take the code from <code>getTitle</code> and use it here
 </p>
 
 {{code "doc/articles/wiki/final.go" `/func makeHandler/` `/^}/`}}
+<p> We can now also remove the <code>getTitle</code> function, 
+and <code>errors</code> from imports. </p>
 
 <p>
 The closure returned by <code>makeHandler</code> is a function that takes
@@ -685,7 +717,7 @@ package:
 {{code "doc/articles/wiki/final.go" `/func main/` `/^}/`}}
 
 <p>
-Finally we remove the calls to <code>getTitle</code> from the handler functions,
+Finally, we remove the calls to <code>getTitle</code> from the handler functions,
 making them much simpler:
 </p>
 
